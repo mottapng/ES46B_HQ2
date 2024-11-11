@@ -1,4 +1,4 @@
-#Cadastro de Clientes - Pessoas
+#Cadastro de Clientes - Pessoas 
 
 Para executar este app você deve configurar o banco de dados PostgreSQL. Este pode ser configurado localmente ou por meio de docker.
 Caso opte por docker, execute o comando:

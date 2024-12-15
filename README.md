@@ -1,72 +1,137 @@
-#Cadastro de Clientes - Pessoas 
+# Sistema de Cadastro de Clientes - Pessoas
 
-Para executar este app você deve configurar o banco de dados PostgreSQL. Este pode ser configurado localmente ou por meio de docker.
-Caso opte por docker, execute o comando:
+## 📋 Sumário
 
-####################################################
+- [Requisitos](#requisitos)
+- [Configuração do Ambiente](#configuração-do-ambiente)
+- [Executando o Projeto](#executando-o-projeto)
+- [Ambiente de Produção](#ambiente-de-produção)
+- [Deployment com Docker](#deployment-com-docker)
 
-docker run -it  --rm   --name myPostgresDb    -p 5432:5432     -e POSTGRES_USER=postgres     -e POSTGRES_PASSWORD=postgres     -e POSTGRES_DB=localdb   -d  postgres
+## 🚀 Requisitos
 
-####################################################
+- Java JDK
+- PostgreSQL
+- Docker (opcional)
 
-Para executar o projeto, verifique se o arquivo mvnw é executável, caso não seja, voce deve executar primeiro `chmod +x mvnw` (linux).
+## ⚙️ Configuração do Ambiente
 
+### Banco de Dados
 
-############### No linux utilize ################
+Você pode configurar o PostgreSQL localmente ou utilizar Docker.
 
+#### Usando Docker para PostgreSQL
+
+```bash
+docker run -it --rm \
+--name myPostgresDb \
+-p 5432:5432 \
+-e POSTGRES_USER=postgres \
+-e POSTGRES_PASSWORD=postgres \
+-e POSTGRES_DB=localdb \
+-d postgres
+```
+
+## 🏃 Executando o Projeto
+
+### Preparação
+
+Verifique se o arquivo `mvnw` possui permissão de execução. No Linux, se necessário:
+
+```bash
+chmod +x mvnw
+```
+
+### Executando o Projeto
+
+#### Linux
+
+```bash
 ./mvnw clean package payara-micro:start
+```
 
-#################################################
+> Para pular os testes: `./mvnw clean package -DskipTests=true`
 
-Para nao executar testes, utilize: ./mvnw clean package -DskipTests=true
+#### Windows
 
-############### No windos utilize ################
-
+```bash
 mvnw.cmd clean package payara-micro:start
+```
 
-#################################################
+> **Nota**: Pode ser necessário configurar a variável JAVA_HOME:
 
+```bash
+set JAVA_HOME=C:\Program Files\Java\jdk-21
+```
 
-Talvez seja necessário configurar a variável JAVA_HOME. Para isso, verifique onde sua jdk está instalada e informe a variável utilizando o path resumido (dir /x). Exemplo:
+Após a inicialização, acesse: [http://localhost:8080](http://localhost:8080)
 
-SET  JAVA_HOME="C:\Progra~1\Java\jdk-20"
+## 🌐 Ambiente de Produção
 
-Após iniciado, voce poderá acessar o projeto em http://localhost:8080.
+### Variáveis de Ambiente Necessárias
 
-===========  EM PRODUCAO ======
-Para executar em producao voce devera configurar as variaveis de ambiente: DATABASE_URL, DATABASE_USERNAME e DATABASE_PASSWORD
+| Variável          | Exemplo                                  | Descrição                  |
+| ----------------- | ---------------------------------------- | -------------------------- |
+| DATABASE_URL      | jdbc:postgresql://127.0.0.1:5432/localdb | URL de conexão com o banco |
+| DATABASE_USERNAME | postgres                                 | Usuário do banco           |
+| DATABASE_PASSWORD | postgres                                 | Senha do banco             |
 
-Exemplos:
-DATABASE_URL="jdbc:postgresql://127.0.0.1:5432/localdb" 
-DATABASE_USERNAME="postgres" -
-DATABASE_PASSWORD="postgres"
+### Métodos de Deploy
 
-Há duas maneiras de alocar em producao (1 executar arquivo.jar e 2 gerar container):
-1. Executar diretamente o payara-micro ou outro ee server compatível
+#### 1. Execução Direta
 
-%> java -jar <payara-micro> Cadastro-Pessoas.war
+```bash
+java -jar <payara-micro> Cadastro-Pessoas.war
+```
 
-O arquivo .war encontra-se dentro da pasta target.
+> O arquivo WAR está localizado na pasta `target`
 
-------------- -------- -------------- ------------- ------------- ------------- -------------
+#### 2. Deployment com Docker
 
-2. Entregar o projeto via Docker. Para construir a imagem Docker, execute os seguintes comandos no diretório onde este arquivo reside:
+1. Construa a imagem:
 
-#################################################
-
-./mvnw clean package 
-
+```bash
+./mvnw clean package
 docker build -t cadpessoas:v1 .
+```
 
-Para rodar a imagem e configurar as variaveis de ambiente, utilize o comando 
+1. Execute o container:
 
-docker run -it --rm -e DATABASE_URL="jdbc:postgresql://<url do banco de dados>" -e DATABASE_USERNAME="<nome do usuario>" -e DATABASE_PASSWORD="<senha do usuario>" -p 8080:8080 cadpessoas:v1
+```bash
+docker run -it --rm \
+-e DATABASE_URL="jdbc:postgresql://<url-do-banco>" \
+-e DATABASE_USERNAME="<usuario>" \
+-e DATABASE_PASSWORD="<senha>" \
+-p 8080:8080 cadpessoas:v1
+```
 
-Exemplo de comando completo:
-docker run -it --rm -e DATABASE_URL="jdbc:postgresql://192.168.0.110:5432/localdb" -e DATABASE_USERNAME="postgres" -e DATABASE_PASSWORD="postgres" -p 8080:8080 cadpessoas:v1
+Exemplo completo:
 
+```bash
+docker run -it --rm \
+-e DATABASE_URL="jdbc:postgresql://192.168.0.110:5432/localdb" \
+-e DATABASE_USERNAME="postgres" \
+-e DATABASE_PASSWORD="postgres" \
+-p 8080:8080 cadpessoas:v1
+```
 
-Assim que a execução começar, você poderá acessar o projeto em http://localhost:8080/Cadastro-Pessoas
+Após a inicialização, acesse: [http://localhost:8080/Cadastro-Pessoas](http://localhost:8080/Cadastro-Pessoas)
 
-Exemplo de configuração para o bd em produção:
-docker run -it  --rm   --name ProductPostgresDb    -p 5432:5432     -e POSTGRES_USER=postgres     -e POSTGRES_PASSWORD=sudodb     -e POSTGRES_DB=customerdb   -e PGDATA=/var/lib/postgresql/data/pgdata -v C:/Users/UTFPR/Downloads/dados:/var/lib/postgresql/data -d postgres
+### Configuração do PostgreSQL em Produção
+
+```bash
+docker run -it --rm \
+--name ProductPostgresDb \
+-p 5432:5432 \
+-e POSTGRES_USER=postgres \
+-e POSTGRES_PASSWORD=sudodb \
+-e POSTGRES_DB=customerdb \
+-e PGDATA=/var/lib/postgresql/data/pgdata \
+-v C:/Users/UTFPR/Downloads/dados:/var/lib/postgresql/data \
+-d postgres
+```
+
+## 📝 Notas Adicionais
+
+- Certifique-se de que todas as variáveis de ambiente estejam configuradas corretamente antes de executar em produção
+- Verifique se as portas necessárias (8080, 5432) estão disponíveis antes da execução

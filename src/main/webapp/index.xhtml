@@ -18,7 +18,7 @@
                 <f:selectItem itemValue="" itemLabel="=== Selecione uma Cidade ===" />
                 <f:selectItems value="#{beanJFCidade.all}" var="c" itemLabel="#{c.nome}" itemValue="#{c.id}" />
             </h:selectOneMenu>
-            <h:commandButton value="[]" action="#{beanJFPessoa.newID()}" />
+            <h:commandButton value="Gerar ID" action="#{beanJFPessoa.newID()}" />
             <h:commandButton value="+" action="#{beanJFPessoa.add()}" />
         </h:form>
     <hr/>
